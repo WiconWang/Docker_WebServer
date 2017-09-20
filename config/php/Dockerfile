@@ -84,5 +84,8 @@ RUN yes | apt-get install openssl  libssl-dev \
     &&  pecl install mongodb \
     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
 
+RUN yes | pecl install swoole \
+    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/swoole.so" > /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
+
 
 
