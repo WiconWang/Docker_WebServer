@@ -1,0 +1,70 @@
+nginx:
+  image: nginx:alpine
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - ~/Sites/:/Sites/:rw
+    - ./wwwroot/:/var/www/html/:rw
+    - ./config/nginx/conf.d:/etc/nginx/conf.d/:ro
+    - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./logs/nginx/:/var/log/nginx/:rw
+  links:
+    - php-fpm:fpm
+  container_name: nginx
+  restart: always
+
+php-fpm:
+  build: ./config/php
+  expose:
+    - "9000"
+  volumes:
+    - ./wwwroot/:/var/www/html/:rw
+    - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
+    - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+    - ./logs/php-fpm/:/var/log/php-fpm/:rw
+  links:
+    - mysql:mysql
+    - redis:redis
+    - memcached:memcached
+    - mongo:mongo
+  container_name: php-fpm
+  restart: always
+
+mysql:
+  image: mysql:latest
+  ports:
+    - "3306:3306"
+  volumes:
+    - ./config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+    - ./mysqlDB/:/var/lib/mysql/:rw
+    - ./logs/mysql/:/var/log/mysql/:rw
+  environment:
+    MYSQL_ROOT_PASSWORD: "l9851223"
+  container_name: mysql
+  restart: always
+
+redis:
+  image: redis
+  ports:
+    - "6379:6379"
+  container_name: redis
+  restart: always
+
+mongo:
+  image: mongo:latest
+  ports:
+    - "27017:27017"
+  volumes:
+    - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+    - ./mongoDB/:/data/:rw
+    - ./logs/mongodb/:/var/log/mongodb/:rw
+  container_name: mongodb
+  restart: always
+
+memcached:
+  image: memcached
+  ports:
+    - "11211:11211"
+  container_name: memcached
+  restart: always
