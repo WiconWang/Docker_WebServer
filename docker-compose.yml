@@ -4,25 +4,25 @@ nginx:
     - "80:80"
     - "443:443"
   volumes:
-    - ~/Sites/:/Sites/:rw
+    # - ~/Sites/:/Sites/:rw
     - ./wwwroot/:/var/www/html/:rw
-    - ./config/nginx/conf.d:/etc/nginx/conf.d/:ro
-    - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    - ./logs/nginx/:/var/log/nginx/:rw
+    - ./Config/nginx/conf.d:/etc/nginx/conf.d/:ro
+    - ./Config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./Logs/nginx/:/var/log/nginx/:rw
   links:
     - php-fpm:fpm
   container_name: nginx
   restart: always
 
 php-fpm:
-  build: ./config/php
+  build: ./Config/php
   expose:
     - "9000"
   volumes:
     - ./wwwroot/:/var/www/html/:rw
-    - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
-    - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
-    - ./logs/php-fpm/:/var/log/php-fpm/:rw
+    - ./Config/php/php.ini:/usr/local/etc/php/php.ini:ro
+    - ./Config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+    - ./Logs/php-fpm/:/var/log/php-fpm/:rw
   links:
     - mysql:mysql
     - redis:redis
@@ -36,9 +36,9 @@ mysql:
   ports:
     - "3306:3306"
   volumes:
-    - ./config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-    - ./mysqlDB/:/var/lib/mysql/:rw
-    - ./logs/mysql/:/var/log/mysql/:rw
+    - ./Config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+    - ./Databases/mysql/:/var/lib/mysql/:rw
+    - ./Logs/mysql/:/var/log/mysql/:rw
   environment:
     MYSQL_ROOT_PASSWORD: "l9851223"
   container_name: mysql
@@ -48,6 +48,9 @@ redis:
   image: redis
   ports:
     - "6379:6379"
+  volumes:
+    - ./Databases/redis/:/usr/local/redis/:rw
+    - ./Config/redis/redis.conf:/usr/local/etc/redis.conf:ro
   container_name: redis
   restart: always
 
@@ -56,9 +59,9 @@ mongo:
   ports:
     - "27017:27017"
   volumes:
-    - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
-    - ./mongoDB/:/data/:rw
-    - ./logs/mongodb/:/var/log/mongodb/:rw
+    - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
+    - ./Databases/mongodb/:/data/:rw
+    - ./Logs/mongodb/:/var/log/mongodb/:rw
   container_name: mongodb
   restart: always
 
