@@ -26,8 +26,8 @@ php-fpm:
   links:
     - mysql:mysql
     - redis:redis
-    - memcached:memcached
-    - mongo:mongo
+    # - memcached:memcached
+    # - mongo:mongo
   container_name: php-fpm
   restart: always
 
@@ -55,24 +55,25 @@ redis:
   container_name: redis
   restart: always
 
-mongo:
-  image: mongo:latest
-  ports:
-    - "27017:27017"
-  volumes:
-    - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
-    - ./Databases/mongodb/:/data/:rw
-    - ./Logs/mongodb/:/var/log/mongodb/:rw
-  container_name: mongodb
-  restart: always
+# mongo:
+#   image: mongo:latest
+#   ports:
+#     - "27017:27017"
+#   volumes:
+#     - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
+#     - ./Databases/mongodb/:/data/:rw
+#     - ./Logs/mongodb/:/var/log/mongodb/:rw
+#   container_name: mongodb
+#   restart: always
 
-memcached:
-  image: memcached
-  ports:
-    - "11211:11211"
-  container_name: memcached
-  restart: always
+# memcached:
+#   image: memcached
+#   ports:
+#     - "11211:11211"
+#   container_name: memcached
+#   restart: always
 
+#本镜像为 Jdk8 Tomcat8.5.23 自动使用 Maven3.3.9布署
 java-maven-tomcat:
   # 免构建镜像，未修改构建文件下等同于构建本地镜像，如使用本地 build 需注释此行并关闭 build 注释。
   # image: registry.cn-hangzhou.aliyuncs.com/springjk/java-maven-tomcat
@@ -87,9 +88,27 @@ java-maven-tomcat:
   command: "bash /tmp/build.sh"
   volumes:
     # 挂载 Maven 的缓存目录
-    - ./Databases/maven:/usr/share/maven/ref/repository
+    - ./java-maven-tomcat/maven:/usr/share/maven/ref/repository
     # 挂载 Tomcat 的 log 目录
     - ./Logs/tomcat:/usr/local/tomcat/logs
     # 挂载 JAVA 源代码目录
-    - ./CodeJava:/tmp/code
+    - ./java-maven-tomcat/wwwroot:/tmp/code
   restart: always
+
+
+#本镜像为 Jdk8 Tomcat8.5.23 supervisor
+#注意此环境不可与上一个java环境同时开启
+# java-maven-supervisor:
+#   build: ./java-tomcat-supervisor
+#   links:
+#     - mysql
+#   ports:
+#     - "81:80"
+#     - "8080:8080"
+#     - "9001:9001"
+#   command: "bash /tmp/build.sh"
+#   volumes:
+#     - ./java-tomcat-supervisor/wwwroot/static:/data/wwwroot/static
+#     - ./java-tomcat-supervisor/wwwroot/webapps:/data/wwwroot/webapps
+#   restart: always
+
