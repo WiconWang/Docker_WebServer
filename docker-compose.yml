@@ -73,42 +73,46 @@ redis:
 #   container_name: memcached
 #   restart: always
 
-#本镜像为 Jdk8 Tomcat8.5.23 自动使用 Maven3.3.9布署
-java-maven-tomcat:
-  # 免构建镜像，未修改构建文件下等同于构建本地镜像，如使用本地 build 需注释此行并关闭 build 注释。
-  # image: registry.cn-hangzhou.aliyuncs.com/springjk/java-maven-tomcat
-  # 构建本地镜像
-  build: ./java-maven-tomcat
-  links:
-    - mysql
-  # 将容器的8080端口绑定到宿主机的80端口
-  ports:
-    - "8080:8080"
-  # java-maven-tomcat 容器启动后的运行命令
-  command: "bash /tmp/build.sh"
-  volumes:
-    # 挂载 Maven 的缓存目录
-    - ./java-maven-tomcat/maven:/usr/share/maven/ref/repository
-    # 挂载 Tomcat 的 log 目录
-    - ./Logs/tomcat:/usr/local/tomcat/logs
-    # 挂载 JAVA 源代码目录
-    - ./java-maven-tomcat/wwwroot:/tmp/code
-  restart: always
-
-
-#本镜像为 Jdk8 Tomcat8.5.23 supervisor
-#注意此环境不可与上一个java环境同时开启
-# java-maven-supervisor:
-#   build: ./java-tomcat-supervisor
+# Author:/springjk/java-in-docker
+# 本镜像为 Jdk8 Tomcat8.5.23 自动使用 Maven3.3.9布署
+# java-maven-tomcat:
+#   # 免构建镜像，未修改构建文件下等同于构建本地镜像，如使用本地 build 需注释此行并关闭 build 注释。
+#   # image: registry.cn-hangzhou.aliyuncs.com/springjk/java-maven-tomcat
+#   # 构建本地镜像
+#   build: ./java-maven-tomcat
 #   links:
 #     - mysql
+#   # 将容器的8080端口绑定到宿主机的80端口
 #   ports:
-#     - "81:80"
 #     - "8080:8080"
-#     - "9001:9001"
+#   # java-maven-tomcat 容器启动后的运行命令
 #   command: "bash /tmp/build.sh"
 #   volumes:
-#     - ./java-tomcat-supervisor/wwwroot/static:/data/wwwroot/static
-#     - ./java-tomcat-supervisor/wwwroot/webapps:/data/wwwroot/webapps
+#     # 挂载 Maven 的缓存目录
+#     - ./java-maven-tomcat/maven:/usr/share/maven/ref/repository
+#     # 挂载 Tomcat 的 log 目录
+#     - ./Logs/tomcat:/usr/local/tomcat/logs
+#     # 挂载 JAVA 源代码目录
+#     - ./java-maven-tomcat/wwwroot:/tmp/code
 #   restart: always
+
+
+# Author: xmniko/Dockerfile-javaweb
+# 本镜像为 Jdk8 Tomcat8.5.23 supervisor
+# 注意此环境不可与上一个java环境同时开启
+java-tomcat-supervisor:
+  build: ./java-tomcat-supervisor
+  links:
+    - mysql
+  ports:
+    - "81:80"
+    - "8080:8080"
+    - "9001:9001"
+  volumes:
+    - ./java-tomcat-supervisor/wwwroot/static:/data/wwwroot/static
+    - ./java-tomcat-supervisor/wwwroot/webapps:/data/wwwroot/webapps
+    - ./java-tomcat-supervisor/conf/tomcat/server.xml:/data/tomcat/conf/server.xml:ro
+    - ./java-tomcat-supervisor/conf/tomcat/web.xml:/data/tomcat/conf/web.xml:ro
+    - ./java-tomcat-supervisor/conf/httpd/httpd.conf:/etc/httpd/conf/httpd.conf:ro
+  restart: always
 

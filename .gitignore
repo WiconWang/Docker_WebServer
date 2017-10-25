@@ -1,4 +1,10 @@
 Databases/mysql/*
 Databases/mongodb/*
 Databases/redis/*
+Logs/maven/*
+Logs/mongodb/*
+Logs/mysql/*
+Logs/nginx/*
+Logs/tomcat/*
+Logs/php-fpm/*
 wwwroot/work_doudeplatform/
