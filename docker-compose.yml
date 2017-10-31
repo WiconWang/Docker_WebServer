@@ -40,7 +40,7 @@ mysql:
     - ./Databases/mysql/:/var/lib/mysql/:rw
     - ./Logs/mysql/:/var/log/mysql/:rw
   environment:
-    MYSQL_ROOT_PASSWORD: "l9851223"
+    MYSQL_ROOT_PASSWORD: "123456"
   container_name: mysql
   restart: always
 
@@ -54,6 +54,22 @@ redis:
     - ./Config/redis/redis.conf:/usr/local/etc/redis.conf:ro
   container_name: redis
   restart: always
+
+# python:
+#   build: ./Python3-django-scrapy
+#   env_file: ./Python3-django-scrapy/wwwroot/env
+#   stdin_open: true
+#   tty: true
+#   expose:
+#     - "8060"
+#   ports:
+#     - "8060:8060"
+#   links:
+#     - mysql
+#     - redis
+#   volumes:
+#     - ./Python3-django-scrapy/wwwroot:/app
+#   command: python /app/manage.py runserver 0:8060
 
 # mongo:
 #   image: mongo:latest
@@ -79,7 +95,7 @@ redis:
 # 本镜像为 Jdk8 Tomcat8.5.23 supervisor
 # 注意此环境不可与上一个java环境同时开启
 # java-tomcat-supervisor:
-#   build: ./java-tomcat-supervisor
+#   build: ./Java-tomcat-supervisor
 #   links:
 #     - mysql
 #   ports:
@@ -87,22 +103,22 @@ redis:
 #     - "8080:8080"
 #     - "9001:9001"
 #   volumes:
-#     - ./java-tomcat-supervisor/wwwroot/static:/data/wwwroot/static
-#     - ./java-tomcat-supervisor/wwwroot/webapps:/data/wwwroot/webapps
-#     - ./java-tomcat-supervisor/conf/tomcat/server.xml:/data/tomcat/conf/server.xml:ro
-#     - ./java-tomcat-supervisor/conf/tomcat/web.xml:/data/tomcat/conf/web.xml:ro
-#     - ./java-tomcat-supervisor/conf/httpd/httpd.conf:/etc/httpd/conf/httpd.conf:ro
+#     - ./Java-tomcat-supervisor/wwwroot/static:/data/wwwroot/static
+#     - ./Java-tomcat-supervisor/wwwroot/webapps:/data/wwwroot/webapps
+#     - ./Java-tomcat-supervisor/conf/tomcat/server.xml:/data/tomcat/conf/server.xml:ro
+#     - ./Java-tomcat-supervisor/conf/tomcat/web.xml:/data/tomcat/conf/web.xml:ro
+#     - ./Java-tomcat-supervisor/conf/httpd/httpd.conf:/etc/httpd/conf/httpd.conf:ro
 #   restart: always
 
 
 
-# Author:/springjk/java-in-docker
+# Author:/springjk/Java-in-docker
 # 本镜像为 Jdk8 Tomcat8.5.23 自动使用 Maven3.3.9布署
 # java-maven-tomcat:
 #   # 免构建镜像，未修改构建文件下等同于构建本地镜像，如使用本地 build 需注释此行并关闭 build 注释。
-#   # image: registry.cn-hangzhou.aliyuncs.com/springjk/java-maven-tomcat
+#   # image: registry.cn-hangzhou.aliyuncs.com/springjk/Java-maven-tomcat
 #   # 构建本地镜像
-#   build: ./java-maven-tomcat
+#   build: ./Java-maven-tomcat
 #   links:
 #     - mysql
 #   # 将容器的8080端口绑定到宿主机的80端口
@@ -112,9 +128,9 @@ redis:
 #   command: "bash /tmp/build.sh"
 #   volumes:
 #     # 挂载 Maven 的缓存目录
-#     - ./java-maven-tomcat/maven:/usr/share/maven/ref/repository
+#     - ./Java-maven-tomcat/maven:/usr/share/maven/ref/repository
 #     # 挂载 Tomcat 的 log 目录
 #     - ./Logs/tomcat:/usr/local/tomcat/logs
 #     # 挂载 JAVA 源代码目录
-#     - ./java-maven-tomcat/wwwroot:/tmp/code
+#     - ./Java-maven-tomcat/wwwroot:/tmp/code
 #   restart: always
