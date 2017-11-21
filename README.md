@@ -17,8 +17,9 @@ git clone 后。请按需求组合，并启用您需要的环境：
 > LNMP环境，
 > 核心模块：nginx + php7.1 + mysql
 > 扩展可选模块：redis + memcached + mongo  
-> 配置文件、Dockerfile在Config中
-> 默认目录在wwwroot下，注意受到执行权限的影响，如果想使用其它目录做站点目录，请在docker-compose.yml中，把期望目录**映射到/tmp 下，然后nginx配置目录改为/tmp/**。（如~/Sites 映射为 /tmp/sites，Nginx的vhost地址填写为/tmp/sites）
+> 配置文件和Dockerfile 均在Config中
+> 默认目录在wwwroot下，注意受到执行权限的影响，如果想使用其它目录做站点目录，请在docker-compose.yml中，把期望目录**映射到/tmp 下，然后nginx配置目录改为/tmp/**。（如~/Sites 映射为 /sites，Nginx的vhost地址填写为/sites）
+> 另：为了安全性，建议每一个vhost均配置 fastcgi_param PHP_ADMIN_VALUE 以隔离站点，参考demo.com.conf
 
 > JAVA环境有两种，此两种环境互斥：   
 > Java-tomcat-supervisor ：以wwwroot下webapps为根目录显示站点，此环境内置httpd暂不可用但有bug  
