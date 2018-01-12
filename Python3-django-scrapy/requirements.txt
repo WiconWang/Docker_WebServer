@@ -2,5 +2,10 @@ Django==1.9.5
 psycopg2==2.6.1
 redis==2.10.5
 mock==2.0.0
-Scrapy==1.4
+Scrapy==1.4.0
+urllib3==1.22
+w3lib==1.18.0
+pymongo==3.6.0
+pypng==0.0.18
+PyQRCode==1.2.1
 pymysql
