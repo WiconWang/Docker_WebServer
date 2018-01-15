@@ -24,6 +24,7 @@ php-fpm:
     - ~/Sites/:/sites/:rw
     - ./wwwroot/:/var/www/html/:rw
     - ./Config/php/php.ini:/usr/local/etc/php/php.ini:ro
+    - ./Config/php/conf.d:/usr/local/etc/php/conf.d:rw
     - ./Config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
     - ./Logs/php-fpm/:/var/log/php-fpm/:rw
   links:

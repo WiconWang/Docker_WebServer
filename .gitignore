@@ -7,6 +7,5 @@ Logs/mysql/*
 Logs/nginx/*
 Logs/tomcat/*
 Logs/php-fpm/*
-wwwroot/work_doudeplatform/
 .idea/
 .DS_Store
