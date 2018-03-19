@@ -27,7 +27,8 @@ git clone 后。请按需求组合，并启用您需要的环境：
 > 建议同时请启用Mysql
 
 > Python环境
-> Python 3.6 + Django 1.9 + Scrapy 1.4   
+> Python 3.6 + Django 1.9 + Scrapy 1.4  
+> 注意 wwwroot/env下，启用了一个名为docker的库并使用了帐号密码，请mysql初始化完成以后，新建此库再编译python区  
 > 建议同时请启用Mysql、Redis
 ---  
 
