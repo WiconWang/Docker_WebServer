@@ -31,7 +31,7 @@ php-fpm:
     - mysql:mysql
     - redis:redis
     # - memcached:memcached
-    - mongo:mongo
+    # - mongo:mongo
   container_name: php-fpm
   environment:
     - TZ=Asia/Shanghai
