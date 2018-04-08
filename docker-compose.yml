@@ -35,6 +35,7 @@ php-fpm:
   container_name: php-fpm
   environment:
     - TZ=Asia/Shanghai
+    - REDIS_PORT=6379
   restart: always
 
 mysql:
