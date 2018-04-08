@@ -20,7 +20,7 @@ RUN yes |  echo "deb http://mirrors.163.com/debian/ jessie main non-free contrib
 
 
 # mcrypt
-RUN apt-get install -y libmcrypt-dev libicu-dev sqlite3 libsqlite3-dev libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libxml2-dev curl libcurl3 libcurl4-openssl-dev  libldb-dev libldap2-dev \
+RUN apt-get install -y libmcrypt-dev libicu-dev sqlite3 libsqlite3-dev libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libxml2-dev curl libcurl3 libcurl4-openssl-dev  libldb-dev libldap2-dev openssl  libssl-dev git wget unixodbc-dev \
 && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
 && docker-php-ext-install json mbstring pdo pdo_sqlite tokenizer simplexml xml sockets  ldap mcrypt zip pcntl opcache pdo_mysql mysqli soap ctype  \
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
@@ -48,8 +48,7 @@ RUN yes | pecl channel-update pecl.php.net && pecl install xdebug \
     && printf "\n" | pecl install redis \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini
 
-RUN yes | apt-get install wget unixodbc-dev \
-    && wget http://pecl.php.net/get/pdo_sqlsrv-4.3.0.tgz \
+RUN yes | wget http://pecl.php.net/get/pdo_sqlsrv-4.3.0.tgz \
     && tar -zxvf pdo_sqlsrv-4.3.0.tgz \
     && cd pdo_sqlsrv-4.3.0 \
     && phpize \
@@ -57,7 +56,7 @@ RUN yes | apt-get install wget unixodbc-dev \
     && make  \
     && make install \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/pdo_sqlsrv.so" > /usr/local/etc/php/conf.d/docker-php-ext-pdo_sqlsrv.ini \
-    && printf "\n" | pecl install sqlsrv \
+    && pecl install sqlsrv \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/sqlsrv.so" > /usr/local/etc/php/conf.d/docker-php-ext-sqlsrv.ini
 
 
@@ -72,8 +71,7 @@ RUN yes | wget  https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemca
     &&  cd ../ \
     &&  rm -rf ./libmemcached-1.0.18*
 
-RUN yes | apt-get install -y git \
-    && git clone https://github.com/websupport-sk/pecl-memcache memcache \
+RUN yes | git clone https://github.com/websupport-sk/pecl-memcache memcache \
     &&  cd memcache \
     &&  phpize \
     &&  ./configure \
@@ -83,8 +81,7 @@ RUN yes | apt-get install -y git \
     &&  rm -rf ./memcache*
 
     #Mongodb
-RUN yes | apt-get install openssl  libssl-dev \
-    &&  pecl install mongodb \
+RUN yes | pecl install mongodb \
     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
 
 RUN yes | pecl install swoole \
