@@ -31,7 +31,8 @@ RUN apt-get install -y libmcrypt-dev libicu-dev sqlite3 libsqlite3-dev libfreety
 RUN docker-php-ext-install bcmath
 
 # Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+&& composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
 
 # XDEBUG yaf redis
@@ -39,8 +40,8 @@ RUN yes | pecl channel-update pecl.php.net && pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.xdebug.remote_host=127.0.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_host=172.17.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_port=9009" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && printf "\n" | pecl install yaf \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yaf.so" > /usr/local/etc/php/conf.d/docker-php-ext-yaf.ini \
     && printf "\n" | pecl install yar \
