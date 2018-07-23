@@ -2,7 +2,8 @@
 docker-compose.yml 文件中包含以下程序配置，  
 
 1.  Nginx   
-1.  PHP7.1 （ Config/php/Dockerfile）
+1.  PHP7.1 （ Config/php/7.1/Dockerfile）
+1.  PHP5.6 （ Config/php/5.6/Dockerfile）
 1.  Mysql    
 1.  Redis   
 1.  Memcached   
@@ -15,13 +16,17 @@ docker-compose.yml 文件中包含以下程序配置，
 git clone 后。请按需求组合，并启用您需要的环境：    
 
 ### LNMP环境，  
-> 核心模块：nginx + php7.1 + mysql ，扩展可选模块：redis 、 memcached 、 mongo   
+> 核心模块：nginx + php7.1 + mysql ，扩展可选模块：php5.6、 redis 、 memcached 、 mongo   
 
 > 配置文件和Dockerfile 均在Config中  
 
+>  docker-compose.yml 中选择开启php版本，可并存，注意pecl.php.net经常被墙，建议开启VPN后再进行编译
+
 > 默认目录在wwwroot下，如果想使用其它目录做站点目录，请在docker-compose.yml中，把期望目录映射到容器内目录，然后nginx配置目录使用映射目录，如果有权限问题，可以映射到/tmp/下。（如~/Sites 映射为 /sites，Nginx的vhost地址填写为/sites）    
 
-> 另：Xdebug默认的端口是9009，请到Config/php/conf.d/xdebug.ini中修改IP为你的IP，建议使用 LAN的IP地址   
+> 另：Xdebug默认的端口是9009，请到Config/php/conf.d/xdebug.ini中修改IP为你的IP，建议使用 LAN的IP地址  
+ 
+>  多个PHP同时启用时，Yml文件引入PHP时起好别名，同时nginx配置中正确引入 如 fastcgi_pass   fpm56:9000; 
 
 ### JAVA环境
 > 有两种，此两种环境互斥：   

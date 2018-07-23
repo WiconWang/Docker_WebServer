@@ -6,14 +6,14 @@ FROM php:7.1-fpm
 # RUN export https_proxy=192.168.0.111:1080
 
 # Update debian Source to aliyun
-RUN yes |  echo "deb http://mirrors.163.com/debian/ jessie main non-free contrib" > /etc/apt/sources.list \
-&& echo "deb http://mirrors.163.com/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb http://mirrors.163.com/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb-src http://mirrors.163.com/debian/ jessie main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb-src http://mirrors.163.com/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb-src http://mirrors.163.com/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb http://mirrors.163.com/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb-src http://mirrors.163.com/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list \
+RUN yes |  echo "deb http://mirrors.aliyun.com/debian/ jessie main non-free contrib" > /etc/apt/sources.list \
+&& echo "deb http://mirrors.aliyun.com/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list \
+&& echo "deb http://mirrors.aliyun.com/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list \
+&& echo "deb-src http://mirrors.aliyun.com/debian/ jessie main non-free contrib" >> /etc/apt/sources.list \
+&& echo "deb-src http://mirrors.aliyun.com/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list \
+&& echo "deb-src http://mirrors.aliyun.com/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list \
+&& echo "deb http://mirrors.aliyun.com/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list \
+&& echo "deb-src http://mirrors.aliyun.com/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list \
 && apt-get update
 
 
@@ -35,19 +35,23 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ 
 && composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
 
-# XDEBUG yaf redis
-RUN yes | pecl channel-update pecl.php.net && pecl install xdebug \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_host=172.17.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_port=9009" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && printf "\n" | pecl install yaf \
+
+#  yaf redis
+RUN yes | pecl install yaf \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yaf.so" > /usr/local/etc/php/conf.d/docker-php-ext-yaf.ini \
     && printf "\n" | pecl install yar \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yar.so" > /usr/local/etc/php/conf.d/docker-php-ext-yar.ini \
     && printf "\n" | pecl install redis \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini
+
+# XDEBUG
+RUN yes | pecl channel-update pecl.php.net && pecl install xdebug \
+    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_host=172.17.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_port=9009" >> /usr/local/etc/php/conf.d/xdebug.ini
+
 
 RUN yes | wget http://pecl.php.net/get/pdo_sqlsrv-4.3.0.tgz \
     && tar -zxvf pdo_sqlsrv-4.3.0.tgz \

@@ -11,21 +11,22 @@ nginx:
     - ./Logs/nginx/:/var/log/nginx/:rw
   links:
     - php-fpm:fpm
+    - php56-fpm:fpm56
   container_name: nginx
   environment:
     - TZ=Asia/Shanghai
   restart: always
 
 php-fpm:
-  build: ./Config/php
+  build: ./Config/php/7.1
   expose:
     - "9000"
   volumes:
     # - ~/Sites/:/sites/:rw
     - ./wwwroot/:/var/www/html/:rw
-    - ./Config/php/php.ini:/usr/local/etc/php/php.ini:ro
-    - ./Config/php/conf.d:/usr/local/etc/php/conf.d:rw
-    - ./Config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+    - ./Config/php/7.1/php.ini:/usr/local/etc/php/php.ini:rw
+    - ./Config/php/7.1/conf.d:/usr/local/etc/php/conf.d:rw
+    - ./Config/php/7.1/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
     - ./Logs/php-fpm/:/var/log/php-fpm/:rw
   links:
     - mysql:mysql
@@ -33,6 +34,29 @@ php-fpm:
     # - memcached:memcached
     # - mongo:mongo
   container_name: php-fpm
+  environment:
+    - TZ=Asia/Shanghai
+    - REDIS_PORT=6379
+  restart: always
+
+
+php56-fpm:
+  build: ./Config/php/5.6
+  expose:
+    - "9000"
+  volumes:
+    # - ~/Sites/:/sites/:rw
+    - ./wwwroot/:/var/www/html/:rw
+    - ./Config/php/5.6/php.ini:/usr/local/etc/php/php.ini:rw
+    - ./Config/php/5.6/conf.d:/usr/local/etc/php/conf.d:rw
+    - ./Config/php/5.6/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+    - ./Logs/php-fpm/:/var/log/php-fpm/:rw
+  links:
+    - mysql:mysql
+    - redis:redis
+    # - memcached:memcached
+    # - mongo:mongo
+  container_name: php56-fpm
   environment:
     - TZ=Asia/Shanghai
     - REDIS_PORT=6379
@@ -86,7 +110,7 @@ redis:
 #     - redis
 #     - mongo
 #   volumes:
-#     # - ~/Sites/:/sites/:rw
+    # - ~/Sites/:/sites/:rw
 #     - ./Python3-django-scrapy/wwwroot:/app
 #   container_name: python3
 #   command: python /app/manage.py runserver 0:8060
@@ -94,18 +118,18 @@ redis:
 #     - TZ=Asia/Shanghai
 #   restart: always
 
-# mongo:
-#   image: mongo:latest
-#   ports:
-#     - "27017:27017"
-#   volumes:
-#     - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
-#     - ./Databases/mongodb:/data/db:rw
-#     - ./Logs/mongodb/:/var/log/mongodb/:rw
-#   container_name: mongodb
-#   environment:
-#     - TZ=Asia/Shanghai
-#   restart: always
+mongo:
+  image: mongo:latest
+  ports:
+    - "27017:27017"
+  volumes:
+    - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
+    - ./Databases/mongodb:/data/db:rw
+    - ./Logs/mongodb/:/var/log/mongodb/:rw
+  container_name: mongodb
+  environment:
+    - TZ=Asia/Shanghai
+  restart: always
 
 # memcached:
 #   image: memcached

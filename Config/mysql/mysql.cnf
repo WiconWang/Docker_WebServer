@@ -20,3 +20,12 @@
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
 [mysql]
+
+[mysqld]
+slow_query_log = 1
+long-query-time = 1
+slow_query_log_file = /var/log/mysql/slow.log
+general_log = on
+general_log_file = /var/log/mysql/querys.log
+log_error = /var/log/mysql/error.log
+log_output = FILE
