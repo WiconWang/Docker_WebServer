@@ -93,31 +93,6 @@ redis:
     - TZ=Asia/Shanghai
   restart: always
 
-# 注意此环境有env中配置了一个名为docker的库
-# 请在mysql正常编译，且新建库之后，再重新编译python组件
-#
-# python:
-#   build: ./Python3-django-scrapy
-#   env_file: ./Python3-django-scrapy/wwwroot/env
-#   stdin_open: true
-#   tty: true
-#   expose:
-#     - "8060"
-#   ports:
-#     - "8060:8060"
-#   links:
-#     - mysql
-#     - redis
-#     - mongo
-#   volumes:
-    # - ~/Sites/:/sites/:rw
-#     - ./Python3-django-scrapy/wwwroot:/app
-#   container_name: python3
-#   command: python /app/manage.py runserver 0:8060
-#   environment:
-#     - TZ=Asia/Shanghai
-#   restart: always
-
 mongo:
   image: mongo:latest
   ports:
@@ -140,6 +115,46 @@ mongo:
 #     - TZ=Asia/Shanghai
 #   restart: always
 
+
+# 线上部署，请开启 image command。
+# 可以使用build检出并生成iview-admin模块, 但比较好的办法是使用进入容器用npm生成模块。
+# vue:
+#   image: node:9.11
+#   # build: ./Config/vue/iview
+#   command: nohup npm run dev > /sites/npm.log 2>&1 &
+#   volumes:
+#     - ./wwwroot/vue_demo/:/sites/:rw
+#   ports:
+#     - "9071:8080"
+#   container_name: vue
+#   environment:
+#     - TZ=Asia/Shanghai
+
+
+# 注意此环境有env中配置了一个名为docker的库
+# 请在mysql正常编译，且新建库之后，再重新编译python组件
+#
+# python:
+#   build: ./Python3-django-scrapy
+#   env_file: ./Python3-django-scrapy/wwwroot/env
+#   stdin_open: true
+#   tty: true
+#   expose:
+#     - "9060"
+#   ports:
+#     - "9060:9060"
+#   links:
+#     - mysql
+#     - redis
+#     - mongo
+#   volumes:
+    # - ~/Sites/:/sites/:rw
+#     - ./Python3-django-scrapy/wwwroot:/app
+#   container_name: python3
+#   command: python /app/manage.py runserver 0:9060
+#   environment:
+#     - TZ=Asia/Shanghai
+#   restart: always
 
 
 # Author: xmniko/Dockerfile-javaweb
