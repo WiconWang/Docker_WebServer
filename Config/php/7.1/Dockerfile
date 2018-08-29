@@ -17,18 +17,18 @@ RUN yes |  echo "deb http://mirrors.aliyun.com/debian/ jessie main non-free cont
 && apt-get update
 
 
+# 特殊版本的底层依赖包
+RUN apt-get install -y   --allow-downgrades  libcurl3=7.38.0-4+deb8u11 libldap-2.4-2=2.4.40+dfsg-1+deb8u4 libxml2=2.9.1+dfsg1-5+deb8u6 zlib1g=1:1.2.8.dfsg-2+b1
 
+# 相关组件
+RUN apt-get install -y libmcrypt-dev libicu-dev sqlite3 libsqlite3-dev libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libxml2-dev curl libcurl3 libcurl4-openssl-dev  libldb-dev libldap2-dev openssl  libssl-dev git wget unixodbc-dev
 
-# mcrypt
-RUN apt-get install -y libmcrypt-dev libicu-dev sqlite3 libsqlite3-dev libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libxml2-dev curl libcurl3 libcurl4-openssl-dev  libldb-dev libldap2-dev openssl  libssl-dev git wget unixodbc-dev \
-&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
-&& docker-php-ext-install json mbstring pdo pdo_sqlite tokenizer simplexml xml sockets  ldap mcrypt zip pcntl opcache pdo_mysql mysqli soap ctype  \
+# docker仓库扩展
+RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+&& docker-php-ext-install json mbstring pdo pdo_sqlite tokenizer simplexml xml sockets  ldap mcrypt zip pcntl opcache pdo_mysql mysqli soap ctype  bcmath \
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 && docker-php-ext-install -j$(nproc) gd \
 && docker-php-ext-install -j$(nproc) intl
-
-# bcmath
-RUN docker-php-ext-install bcmath
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
@@ -37,19 +37,19 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ 
 
 
 #  yaf redis
-RUN yes | pecl install yaf \
+RUN yes | pecl channel-update pecl.php.net && pecl install yaf-3.0.7 \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yaf.so" > /usr/local/etc/php/conf.d/docker-php-ext-yaf.ini \
-    && printf "\n" | pecl install yar \
+    && printf "\n" | pecl install yar-2.0.4 \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yar.so" > /usr/local/etc/php/conf.d/docker-php-ext-yar.ini \
-    && printf "\n" | pecl install redis \
+    && printf "\n" | pecl install redis-4.1.1 \
     && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini
 
 # XDEBUG
-RUN yes | pecl channel-update pecl.php.net && pecl install xdebug \
+RUN yes | pecl install xdebug-2.6.1 \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_host=172.17.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_host=172.21.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_port=9009" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 

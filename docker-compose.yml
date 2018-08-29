@@ -1,203 +1,257 @@
-nginx:
-  image: nginx:alpine
-  ports:
-    - "80:80"
-    - "443:443"
-  volumes:
-    # - ~/Sites/:/sites/:rw
-    - ./wwwroot/:/var/www/html/:rw
-    - ./Config/nginx/conf.d:/etc/nginx/conf.d/:ro
-    - ./Config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    - ./Logs/nginx/:/var/log/nginx/:rw
-  links:
-    - php-fpm:fpm
-    - php56-fpm:fpm56
-  container_name: nginx
-  environment:
-    - TZ=Asia/Shanghai
-  restart: always
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # - ~/Sites/:/sites/:rw
+      - ./wwwroot/:/var/www/html/:rw
+      - ./Config/nginx/conf.d:/etc/nginx/conf.d/:ro
+      - ./Config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./Logs/nginx/:/var/log/nginx/:rw
+    links:
+      - php-fpm:fpm
+      - php56-fpm:fpm56
+    container_name: nginx
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.2
+      prod-net:
+        ipv4_address: 172.21.0.2
 
-php-fpm:
-  build: ./Config/php/7.1
-  expose:
-    - "9000"
-  volumes:
-    # - ~/Sites/:/sites/:rw
-    - ./wwwroot/:/var/www/html/:rw
-    - ./Config/php/7.1/php.ini:/usr/local/etc/php/php.ini:rw
-    - ./Config/php/7.1/conf.d:/usr/local/etc/php/conf.d:rw
-    - ./Config/php/7.1/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
-    - ./Logs/php-fpm/:/var/log/php-fpm/:rw
-  links:
-    - mysql:mysql
-    - redis:redis
-    # - memcached:memcached
-    # - mongo:mongo
-  container_name: php-fpm
-  environment:
-    - TZ=Asia/Shanghai
-    - REDIS_PORT=6379
-  restart: always
-
-
-php56-fpm:
-  build: ./Config/php/5.6
-  expose:
-    - "9000"
-  volumes:
-    # - ~/Sites/:/sites/:rw
-    - ./wwwroot/:/var/www/html/:rw
-    - ./Config/php/5.6/php.ini:/usr/local/etc/php/php.ini:rw
-    - ./Config/php/5.6/conf.d:/usr/local/etc/php/conf.d:rw
-    - ./Config/php/5.6/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
-    - ./Logs/php-fpm/:/var/log/php-fpm/:rw
-  links:
-    - mysql:mysql
-    - redis:redis
-    # - memcached:memcached
-    # - mongo:mongo
-  container_name: php56-fpm
-  environment:
-    - TZ=Asia/Shanghai
-    - REDIS_PORT=6379
-  restart: always
-
-mysql:
-  image: mysql:${MYSQL_VERSION}
-  container_name: mysql
-  ports:
-    - "3306:3306"
-  volumes:
-    - ./Config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-    - ./Databases/mysql/:/var/lib/mysql/:rw
-    - ./Logs/mysql/:/var/log/mysql/:rw
-  env_file:
-    - ".env"
-  environment:
-    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    - MYSQL_DATABASE=${MYSQL_DATABASE}
-    - MYSQL_USER=${MYSQL_USER}
-    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  restart: always
-
-redis:
-  image: redis
-  command: redis-server /usr/local/etc/redis.conf
-  ports:
-    - "6379:6379"
-  volumes:
-    - ./Databases/redis/:/usr/local/redis/:rw
-    - ./Config/redis/redis.conf:/usr/local/etc/redis.conf:ro
-  container_name: redis
-  environment:
-    - TZ=Asia/Shanghai
-  restart: always
-
-mongo:
-  image: mongo:latest
-  ports:
-    - "27017:27017"
-  volumes:
-    - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
-    - ./Databases/mongodb:/data/db:rw
-    - ./Logs/mongodb/:/var/log/mongodb/:rw
-  container_name: mongodb
-  environment:
-    - TZ=Asia/Shanghai
-  restart: always
-
-# memcached:
-#   image: memcached
-#   ports:
-#     - "11211:11211"
-#   container_name: memcached
-#   environment:
-#     - TZ=Asia/Shanghai
-#   restart: always
+  php-fpm:
+    build: ./Config/php/7.1
+    expose:
+      - "9000"
+    volumes:
+      # - ~/Sites/:/sites/:rw
+      - ./wwwroot/:/var/www/html/:rw
+      - ./Config/php/7.1/php.ini:/usr/local/etc/php/php.ini:rw
+      - ./Config/php/7.1/conf.d:/usr/local/etc/php/conf.d:rw
+      - ./Config/php/7.1/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+      - ./Logs/php-fpm/:/var/log/php-fpm/:rw
+    links:
+      - mysql:mysql
+      - redis:redis
+      # - memcached:memcached
+      # - mongo:mongo
+    container_name: php-fpm
+    environment:
+      - TZ=Asia/Shanghai
+      - REDIS_PORT=6379
+    restart: always
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.6
+      prod-net:
+        ipv4_address: 172.21.0.6
 
 
-# 线上部署，请开启 image command。
-# 可以使用build检出并生成iview-admin模块, 但比较好的办法是使用进入容器用npm生成模块。
-# vue:
-#   image: node:9.11
-#   # build: ./Config/vue/iview
-#   command: nohup npm run dev > /sites/npm.log 2>&1 &
-#   volumes:
-#     - ./wwwroot/vue_demo/:/sites/:rw
-#   ports:
-#     - "9071:8080"
-#   container_name: vue
-#   environment:
-#     - TZ=Asia/Shanghai
+  php56-fpm:
+    build: ./Config/php/5.6
+    expose:
+      - "9000"
+    volumes:
+      # - ~/Sites/:/sites/:rw
+      - ./wwwroot/:/var/www/html/:rw
+      - ./Config/php/5.6/php.ini:/usr/local/etc/php/php.ini:rw
+      - ./Config/php/5.6/conf.d:/usr/local/etc/php/conf.d:rw
+      - ./Config/php/5.6/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+      - ./Logs/php-fpm/:/var/log/php-fpm/:rw
+    links:
+      - mysql:mysql
+      - redis:redis
+      # - memcached:memcached
+      # - mongo:mongo
+    container_name: php56-fpm
+    environment:
+      - TZ=Asia/Shanghai
+      - REDIS_PORT=6379
+    restart: always
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.7
+      prod-net:
+        ipv4_address: 172.21.0.7
+
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./Config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./Databases/mysql/:/var/lib/mysql/:rw
+      - ./Logs/mysql/:/var/log/mysql/:rw
+    env_file:
+      - ".env"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    restart: always
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.3
+      prod-net:
+        ipv4_address: 172.21.0.3
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./Databases/mongodb:/data/db:rw
+      - ./Logs/mongodb/:/var/log/mongodb/:rw
+    container_name: mongodb
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.4
+      prod-net:
+        ipv4_address: 172.21.0.4
+
+  redis:
+    image: redis
+    command: redis-server /usr/local/etc/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./Databases/redis/:/usr/local/redis/:rw
+      - ./Config/redis/redis.conf:/usr/local/etc/redis.conf:ro
+    container_name: redis
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.8
+      prod-net:
+        ipv4_address: 172.21.0.8
+
+  memcached:
+    image: memcached
+    ports:
+      - "11211:11211"
+    container_name: memcached
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.9
+      prod-net:
+        ipv4_address: 172.21.0.9
 
 
-# 注意此环境有env中配置了一个名为docker的库
-# 请在mysql正常编译，且新建库之后，再重新编译python组件
-#
-# python:
-#   build: ./Python3-django-scrapy
-#   env_file: ./Python3-django-scrapy/wwwroot/env
-#   stdin_open: true
-#   tty: true
-#   expose:
-#     - "9060"
-#   ports:
-#     - "9060:9060"
-#   links:
-#     - mysql
-#     - redis
-#     - mongo
-#   volumes:
-    # - ~/Sites/:/sites/:rw
-#     - ./Python3-django-scrapy/wwwroot:/app
-#   container_name: python3
-#   command: python /app/manage.py runserver 0:9060
-#   environment:
-#     - TZ=Asia/Shanghai
-#   restart: always
+  # # 线上部署，请开启 image command。
+  # # 可以使用build检出并生成iview-admin模块, 但比较好的办法是使用进入容器用npm生成模块。
+  # vue:
+  #   image: node:9.11
+  #   # build: ./Config/vue/iview
+  #   # command: nohup npm run dev > /sites/npm.log 2>&1 &
+  #   volumes:
+  #     - ./wwwroot/vue_demo/:/sites/:rw
+  #   ports:
+  #     - "9071:8080"
+  #   container_name: vue
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   networks:
+  #     - dev-net
+  #     - prod-net
 
 
-# Author: xmniko/Dockerfile-javaweb
-# 本镜像为 Jdk8 Tomcat8.5.23 supervisor
-# 注意此环境不可与上一个java环境同时开启
-# java-tomcat-supervisor:
-#   container_name: tomcat_jdk8
-#   build: ./Java-tomcat-supervisor
-#   links:
-#     - mysql
-#   ports:
-#     - "81:80"
-#     - "8080:8080"
-#     - "9001:9001"
-#   volumes:
-#     - ./Java-tomcat-supervisor/wwwroot/static:/data/wwwroot/static
-#     - ./Java-tomcat-supervisor/wwwroot/webapps:/data/wwwroot/webapps
-#     - ./Java-tomcat-supervisor/conf/tomcat/server.xml:/data/tomcat/conf/server.xml:ro
-#     - ./Java-tomcat-supervisor/conf/tomcat/web.xml:/data/tomcat/conf/web.xml:ro
-#     - ./Java-tomcat-supervisor/conf/httpd/httpd.conf:/etc/httpd/conf/httpd.conf:ro
-#   restart: always
+  # 注意此环境有env中配置了一个名为docker的库
+  # 请在mysql正常编译，且新建库之后，再重新编译python组件
+  #
+  # python:
+  #   build: ./Python3-django-scrapy
+  #   env_file: ./Python3-django-scrapy/wwwroot/env
+  #   stdin_open: true
+  #   tty: true
+  #   expose:
+  #     - "9060"
+  #   ports:
+  #     - "9060:9060"
+  #   links:
+  #     - mysql
+  #     - redis
+  #     - mongo
+  #   volumes:
+      # - ~/Sites/:/sites/:rw
+  #     - ./Python3-django-scrapy/wwwroot:/app
+  #   container_name: python3
+  #   command: python /app/manage.py runserver 0:9060
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   restart: always
+
+
+  # Author: xmniko/Dockerfile-javaweb
+  # 本镜像为 Jdk8 Tomcat8.5.23 supervisor
+  # 注意此环境不可与上一个java环境同时开启
+  # java-tomcat-supervisor:
+  #   container_name: tomcat_jdk8
+  #   build: ./Java-tomcat-supervisor
+  #   links:
+  #     - mysql
+  #   ports:
+  #     - "81:80"
+  #     - "8080:8080"
+  #     - "9001:9001"
+  #   volumes:
+  #     - ./Java-tomcat-supervisor/wwwroot/static:/data/wwwroot/static
+  #     - ./Java-tomcat-supervisor/wwwroot/webapps:/data/wwwroot/webapps
+  #     - ./Java-tomcat-supervisor/conf/tomcat/server.xml:/data/tomcat/conf/server.xml:ro
+  #     - ./Java-tomcat-supervisor/conf/tomcat/web.xml:/data/tomcat/conf/web.xml:ro
+  #     - ./Java-tomcat-supervisor/conf/httpd/httpd.conf:/etc/httpd/conf/httpd.conf:ro
+  #   restart: always
 
 
 
-# Author:/springjk/Java-in-docker
-# 本镜像为 Jdk8 Tomcat8.5.23 自动使用 Maven3.3.9布署
-# java-maven-tomcat:
-#   # 免构建镜像，未修改构建文件下等同于构建本地镜像，如使用本地 build 需注释此行并关闭 build 注释。
-#   # image: registry.cn-hangzhou.aliyuncs.com/springjk/Java-maven-tomcat
-#   # 构建本地镜像
-#   build: ./Java-maven-tomcat
-#   links:
-#     - mysql
-#   # 将容器的8080端口绑定到宿主机的80端口
-#   ports:
-#     - "8080:8080"
-#   # java-maven-tomcat 容器启动后的运行命令
-#   command: "bash /tmp/build.sh"
-#   volumes:
-#     # 挂载 Maven 的缓存目录
-#     - ./Java-maven-tomcat/maven:/usr/share/maven/ref/repository
-#     # 挂载 Tomcat 的 log 目录
-#     - ./Logs/tomcat:/usr/local/tomcat/logs
-#     # 挂载 JAVA 源代码目录
-#     - ./Java-maven-tomcat/wwwroot:/tmp/code
-#   restart: always
+  # Author:/springjk/Java-in-docker
+  # 本镜像为 Jdk8 Tomcat8.5.23 自动使用 Maven3.3.9布署
+  # java-maven-tomcat:
+  #   # 免构建镜像，未修改构建文件下等同于构建本地镜像，如使用本地 build 需注释此行并关闭 build 注释。
+  #   # image: registry.cn-hangzhou.aliyuncs.com/springjk/Java-maven-tomcat
+  #   # 构建本地镜像
+  #   build: ./Java-maven-tomcat
+  #   links:
+  #     - mysql
+  #   # 将容器的8080端口绑定到宿主机的80端口
+  #   ports:
+  #     - "8080:8080"
+  #   # java-maven-tomcat 容器启动后的运行命令
+  #   command: "bash /tmp/build.sh"
+  #   volumes:
+  #     # 挂载 Maven 的缓存目录
+  #     - ./Java-maven-tomcat/maven:/usr/share/maven/ref/repository
+  #     # 挂载 Tomcat 的 log 目录
+  #     - ./Logs/tomcat:/usr/local/tomcat/logs
+  #     # 挂载 JAVA 源代码目录
+  #     - ./Java-maven-tomcat/wwwroot:/tmp/code
+  #   restart: always
+
+networks:
+  dev-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.20.0.0/24
+  prod-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.21.0.0/24
