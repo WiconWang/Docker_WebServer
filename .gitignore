@@ -9,3 +9,4 @@ Logs/tomcat/*
 Logs/php-fpm/*
 .idea/
 .DS_Store
+.vscode
