@@ -32,7 +32,7 @@ RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
-&& composer config -g repo.packagist composer https://packagist.phpcomposer.com
+&& composer config -g repo.packagist composer https://packagist.laravel-china.org
 
 
 
