@@ -1,10 +1,8 @@
-FROM python:3.6
+FROM python:3.7
 
 ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /app
-
-EXPOSE 8060
 
 COPY ./requirements.txt ./
 

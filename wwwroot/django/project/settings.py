@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ['PYTHON_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ['DB_NAME'],
-        'USER': os.environ['DB_USER'],
-        'PASSWORD': os.environ['DB_PASS'],
-        'HOST': os.environ['DB_HOST'],
-        'PORT': os.environ['DB_PORT'],
+        'NAME': os.environ['PYTHON_DB_NAME'],
+        'USER': os.environ['PYTHON_DB_USER'],
+        'PASSWORD': os.environ['PYTHON_DB_PASS'],
+        'HOST': os.environ['PYTHON_DB_HOST'],
+        'PORT': os.environ['PYTHON_DB_PORT'],
     }
 }
 
@@ -125,4 +125,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Redis settings
-REDIS_URL = os.environ.get('REDIS_URL', '')
+REDIS_URL = os.environ.get('PYTHON_REDIS_URL', '')
