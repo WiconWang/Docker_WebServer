@@ -29,3 +29,4 @@ general_log = on
 general_log_file = /var/log/mysql/querys.log
 log_error = /var/log/mysql/error.log
 log_output = FILE
+max_allowed_packet = 256M

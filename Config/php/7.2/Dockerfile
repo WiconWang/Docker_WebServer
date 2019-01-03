@@ -1,5 +1,11 @@
 FROM php:7.2-fpm
+# important !! this Dockerfile version is PHP7.2 ,Change URL and config with Other version
 
+# You may need proxy
+# RUN export http_proxy=192.168.0.111:1080
+# RUN export https_proxy=192.168.0.111:1080
+
+# Update debian Source to aliyun
 RUN yes |  echo "deb http://mirrors.aliyun.com/debian/ jessie main non-free contrib" > /etc/apt/sources.list \
 && echo "deb http://mirrors.aliyun.com/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list \
 && echo "deb http://mirrors.aliyun.com/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list \
@@ -11,101 +17,90 @@ RUN yes |  echo "deb http://mirrors.aliyun.com/debian/ jessie main non-free cont
 && apt-get update
 
 
-# Extensions: ctype, dom, fileinfo, ftp, hash, iconv, json, pdo, pdo_sqlite, session,
-# tokenizer, simplexml, xml, xmlreader, xmlwriter and phar are bundled and compiled into
-# PHP by default. If missing, install them directly by `docker-php-ext-install extension_name`
+# 特殊版本的底层依赖包
+RUN apt-get install -y   --allow-downgrades  libcurl3=7.38.0-4+deb8u11 libldap-2.4-2=2.4.40+dfsg-1+deb8u4 libxml2=2.9.1+dfsg1-5+deb8u6 zlib1g=1:1.2.8.dfsg-2+b1
 
-# Notice:
-# 1. Mcrypt was DEPRECATED in PHP 7.1.0, and REMOVED in PHP 7.2.0.
-# 2. opcache requires PHP version >= 7.0.0.
-# 3. soap requires libxml2-dev.
-# 4. xml, xmlrpc, wddx require libxml2-dev and libxslt-dev.
-# 5. Line `&& :\` is just for better reading and do nothing.
-RUN apt-get update \
-    && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install gd \
-    && :\
-    && apt-get install -y libicu-dev \
-    && docker-php-ext-install intl \
-    && :\
-    && apt-get install -y libxml2-dev \
-    && apt-get install -y libxslt-dev \
-    && docker-php-ext-install soap \
-    && docker-php-ext-install xsl \
-    && docker-php-ext-install xmlrpc \
-    && docker-php-ext-install wddx \
-    && :\
-    && apt-get install -y libbz2-dev \
-    && docker-php-ext-install bz2 \
-    && :\
-    && docker-php-ext-install zip \
-    && docker-php-ext-install pcntl \
-    && docker-php-ext-install pdo_mysql \
-    && docker-php-ext-install mysqli \
-    && docker-php-ext-install mbstring \
-    && docker-php-ext-install exif \
-    && docker-php-ext-install bcmath \
-    && docker-php-ext-install calendar \
-    && docker-php-ext-install sockets \
-    && docker-php-ext-install gettext \
-    && docker-php-ext-install shmop \
-    && docker-php-ext-install sysvmsg \
-    && docker-php-ext-install sysvsem \
-    && docker-php-ext-install sysvshm \
-    && docker-php-ext-install opcache
-    #&& docker-php-ext-install pdo_firebird \
-    #&& docker-php-ext-install pdo_dblib \
-    #&& docker-php-ext-install pdo_oci \
-    #&& docker-php-ext-install pdo_odbc \
-    #&& docker-php-ext-install pdo_pgsql \
-    #&& docker-php-ext-install pgsql \
-    #&& docker-php-ext-install oci8 \
-    #&& docker-php-ext-install odbc \
-    #&& docker-php-ext-install dba \
-    #&& docker-php-ext-install interbase \
-    #&& :\
-    #&& apt-get install -y libmcrypt-dev \
-    #&& docker-php-ext-install mcrypt \
-    #&& :\
-    #&& apt-get install -y curl \
-    #&& apt-get install -y libcurl3 \
-    #&& apt-get install -y libcurl4-openssl-dev \
-    #&& docker-php-ext-install curl \
-    #&& :\
-    #&& apt-get install -y libreadline-dev \
-    #&& docker-php-ext-install readline \
-    #&& :\
-    #&& apt-get install -y libsnmp-dev \
-    #&& apt-get install -y snmp \
-    #&& docker-php-ext-install snmp \
-    #&& :\
-    #&& apt-get install -y libpspell-dev \
-    #&& apt-get install -y aspell-en \
-    #&& docker-php-ext-install pspell \
-    #&& :\
-    #&& apt-get install -y librecode0 \
-    #&& apt-get install -y librecode-dev \
-    #&& docker-php-ext-install recode \
-    #&& :\
-    #&& apt-get install -y libtidy-dev \
-    #&& docker-php-ext-install tidy \
-    #&& :\
-    #&& apt-get install -y libgmp-dev \
-    #&& ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h \
-    #&& docker-php-ext-install gmp \
-    #&& :\
-    #&& apt-get install -y postgresql-client \
-    #&& apt-get install -y mysql-client \
-    #&& :\
-    #&& apt-get install -y libc-client-dev \
-    #&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    #&& docker-php-ext-install imap \
-    #&& :\
-    #&& apt-get install -y libldb-dev \
-    #&& apt-get install -y libldap2-dev \
-    #&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
-    #&& docker-php-ext-install ldap \
+# 相关组件
+RUN apt-get install -y libmcrypt-dev libicu-dev sqlite3 libsqlite3-dev libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libxml2-dev curl libcurl3 libcurl4-openssl-dev  libldb-dev libldap2-dev openssl  libssl-dev git wget unixodbc-dev
+
+# docker仓库扩展
+RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+&& docker-php-ext-install json mbstring pdo pdo_sqlite tokenizer simplexml xml sockets  ldap zip pcntl opcache pdo_mysql mysqli soap ctype  bcmath \
+&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+&& docker-php-ext-install -j$(nproc) gd \
+&& docker-php-ext-install -j$(nproc) intl
+
+
+#  Mcrypt was DEPRECATED in PHP 7.1.0, and REMOVED in PHP 7.2.0.
+RUN pecl install mcrypt-1.0.1 \
+&& docker-php-ext-enable mcrypt
+
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+&& composer config -g repo.packagist composer https://packagist.laravel-china.org
+
+
+
+# yaf yar redis
+RUN yes | pecl channel-update pecl.php.net && pecl install yaf-3.0.7 \
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yaf.so" > /usr/local/etc/php/conf.d/docker-php-ext-yaf.ini \
+    && printf "\n" | pecl install yar-2.0.4 \
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yar.so" > /usr/local/etc/php/conf.d/docker-php-ext-yar.ini \
+    && printf "\n" | pecl install redis-4.1.1 \
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini
+
+# Xdebug
+RUN yes | pecl install xdebug-2.6.1 \
+    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_host=172.21.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_port=9009" >> /usr/local/etc/php/conf.d/xdebug.ini
+
+
+# SqlServer
+RUN yes | wget http://pecl.php.net/get/pdo_sqlsrv-4.3.0.tgz \
+    && tar -zxvf pdo_sqlsrv-4.3.0.tgz \
+    && cd pdo_sqlsrv-4.3.0 \
+    && phpize \
+    && ./configure\
+    && make  \
+    && make install \
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/pdo_sqlsrv.so" > /usr/local/etc/php/conf.d/docker-php-ext-pdo_sqlsrv.ini \
+    && pecl install sqlsrv \
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/sqlsrv.so" > /usr/local/etc/php/conf.d/docker-php-ext-sqlsrv.ini
+ 
+
+# memcache
+RUN yes | git clone https://github.com/websupport-sk/pecl-memcache memcache \
+    &&  cd memcache \
+    &&  phpize \
+    &&  ./configure \
+    &&  make && make install \
+    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/memcache.so" > /usr/local/etc/php/conf.d/docker-php-ext-memcache.ini \
+    &&  cd ../ \
+    &&  rm -rf ./memcache*
+
+# # memcached
+# RUN yes | apt-get install -y zlib1g-dev \
+#     && wget  https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz \
+#     && tar -zxf libmemcached-1.0.18.tar.gz \
+#     && cd libmemcached-1.0.18 \
+#     && ./configure --prefix=/usr/local/libmemcached --with-memcached \
+#     &&  make  &&  make install \
+#     &&  printf "/usr/local/libmemcached --with-memcached \n"  | pecl install memcached-3.1.3 \
+#     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/memcached.so" > /usr/local/etc/php/conf.d/docker-php-ext-memcached.ini \
+#     &&  cd ../ \
+#     &&  rm -rf ./libmemcached-1.0.18*
+
+# Mongodb
+RUN yes | pecl install mongodb-1.5.3 \
+    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
+
+# Swoole
+RUN yes | pecl install swoole-4.2.11 \
+    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/swoole.so" > /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
+
+
+
