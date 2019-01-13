@@ -71,7 +71,7 @@ RUN yes | wget  https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemca
     && cd libmemcached-1.0.18 \
     && ./configure --prefix=/usr/local/libmemcached --with-memcached \
     &&  make  &&  make install \
-    &&  printf "/usr/local/libmemcached --with-memcached --disable-memcached-sasl \n" | pecl install memcached \
+    &&  printf "/usr/local/libmemcached --with-memcached --disable-memcached-sasl \n" | pecl install memcached-3.0.4 \
     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/memcached.so" > /usr/local/etc/php/conf.d/docker-php-ext-memcached.ini \
     &&  cd ../ \
     &&  rm -rf ./libmemcached-1.0.18*
@@ -89,7 +89,7 @@ RUN yes | git clone https://github.com/websupport-sk/pecl-memcache memcache \
 RUN yes | pecl install mongodb \
     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
 
-RUN yes | pecl install swoole \
+RUN yes | pecl install swoole-4.2.12 \
     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/swoole.so" > /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
 
 

@@ -44,11 +44,11 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ 
 
 # yaf yar redis
 RUN yes | pecl channel-update pecl.php.net && pecl install yaf-3.0.7 \
-    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yaf.so" > /usr/local/etc/php/conf.d/docker-php-ext-yaf.ini \
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/yaf.so" > /usr/local/etc/php/conf.d/docker-php-ext-yaf.ini \
     && printf "\n" | pecl install yar-2.0.4 \
-    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/yar.so" > /usr/local/etc/php/conf.d/docker-php-ext-yar.ini \
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/yar.so" > /usr/local/etc/php/conf.d/docker-php-ext-yar.ini \
     && printf "\n" | pecl install redis-4.1.1 \
-    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini
 
 # Xdebug
 RUN yes | pecl install xdebug-2.6.1 \
@@ -67,9 +67,9 @@ RUN yes | wget http://pecl.php.net/get/pdo_sqlsrv-4.3.0.tgz \
     && ./configure\
     && make  \
     && make install \
-    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/pdo_sqlsrv.so" > /usr/local/etc/php/conf.d/docker-php-ext-pdo_sqlsrv.ini \
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/pdo_sqlsrv.so" > /usr/local/etc/php/conf.d/docker-php-ext-pdo_sqlsrv.ini \
     && pecl install sqlsrv \
-    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/sqlsrv.so" > /usr/local/etc/php/conf.d/docker-php-ext-sqlsrv.ini
+    && echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/sqlsrv.so" > /usr/local/etc/php/conf.d/docker-php-ext-sqlsrv.ini
  
 
 # memcache
@@ -78,7 +78,7 @@ RUN yes | git clone https://github.com/websupport-sk/pecl-memcache memcache \
     &&  phpize \
     &&  ./configure \
     &&  make && make install \
-    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/memcache.so" > /usr/local/etc/php/conf.d/docker-php-ext-memcache.ini \
+    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/memcache.so" > /usr/local/etc/php/conf.d/docker-php-ext-memcache.ini \
     &&  cd ../ \
     &&  rm -rf ./memcache*
 
@@ -89,18 +89,18 @@ RUN yes | git clone https://github.com/websupport-sk/pecl-memcache memcache \
 #     && cd libmemcached-1.0.18 \
 #     && ./configure --prefix=/usr/local/libmemcached --with-memcached \
 #     &&  make  &&  make install \
-#     &&  printf "/usr/local/libmemcached --with-memcached \n"  | pecl install memcached-3.1.3 \
-#     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/memcached.so" > /usr/local/etc/php/conf.d/docker-php-ext-memcached.ini \
+#     &&  printf "/usr/local/libmemcached --with-memcached \n"  | pecl install memcached-3.0.4 \
+#     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/memcached.so" > /usr/local/etc/php/conf.d/docker-php-ext-memcached.ini \
 #     &&  cd ../ \
 #     &&  rm -rf ./libmemcached-1.0.18*
 
 # Mongodb
 RUN yes | pecl install mongodb-1.5.3 \
-    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
+    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
 
 # Swoole
 RUN yes | pecl install swoole-4.2.11 \
-    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/swoole.so" > /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
+    &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/swoole.so" > /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
 
 
 
