@@ -1,4 +1,4 @@
-FROM php:7.2-fpm
+FROM php:7.2-fpm-stretch
 # important !! this Dockerfile version is PHP7.2 ,Change URL and config with Other version
 
 # You may need proxy
@@ -6,22 +6,20 @@ FROM php:7.2-fpm
 # RUN export https_proxy=192.168.0.111:1080
 
 # Update debian Source to aliyun
-RUN yes |  echo "deb http://mirrors.aliyun.com/debian/ jessie main non-free contrib" > /etc/apt/sources.list \
-&& echo "deb http://mirrors.aliyun.com/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb http://mirrors.aliyun.com/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb-src http://mirrors.aliyun.com/debian/ jessie main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb-src http://mirrors.aliyun.com/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb-src http://mirrors.aliyun.com/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb http://mirrors.aliyun.com/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list \
-&& echo "deb-src http://mirrors.aliyun.com/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list \
-&& apt-get update
+# RUN yes |  echo "deb http://mirrors.aliyun.com/debian/ jessie main non-free contrib" >> /etc/apt/sources.list \
+# && echo "deb http://mirrors.aliyun.com/debian/ jessie-proposed-updates main non-free contrib" >> /etc/apt/sources.list \
+# && echo "deb-src http://mirrors.aliyun.com/debian/ jessie main non-free contrib" >> /etc/apt/sources.list \
+# && echo "deb-src http://mirrors.aliyun.com/debian/ jessie-proposed-updates main non-free contrib" >> /etc/apt/sources.list \
+# && echo "deb http://mirrors.aliyun.com/debian-backports/ jessie-backports main contrib non-free" >> /etc/apt/sources.list \
+# && echo "deb-src http://mirrors.aliyun.com/debian-backports/ jessie-backports main contrib non-free" >> /etc/apt/sources.list \
+# && apt-get update 
 
-
+RUN yes |  apt-get update
 # 特殊版本的底层依赖包
-RUN apt-get install -y   --allow-downgrades  libcurl3=7.38.0-4+deb8u11 libldap-2.4-2=2.4.40+dfsg-1+deb8u4 libxml2=2.9.1+dfsg1-5+deb8u6 zlib1g=1:1.2.8.dfsg-2+b1
+# RUN apt-get install -y   --force-yes  libcurl3=7.38.0-4+deb8u11 libldap-2.4-2=2.4.40+dfsg-1+deb8u4 libxml2=2.9.1+dfsg1-5+deb8u6 zlib1g=1:1.2.8.dfsg-2+b1
 
 # 相关组件
-RUN apt-get install -y libmcrypt-dev libicu-dev sqlite3 libsqlite3-dev libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libxml2-dev curl libcurl3 libcurl4-openssl-dev  libldb-dev libldap2-dev openssl  libssl-dev git wget unixodbc-dev
+RUN apt-get install -y libmcrypt-dev libicu-dev sqlite3 libsqlite3-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libxml2-dev curl libcurl3 libcurl4-openssl-dev  libldb-dev libldap2-dev openssl  libssl-dev git wget unixodbc-dev
 
 # docker仓库扩展
 RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
@@ -38,7 +36,7 @@ RUN pecl install mcrypt-1.0.1 \
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
-&& composer config -g repo.packagist composer https://packagist.laravel-china.org
+&& composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 
 

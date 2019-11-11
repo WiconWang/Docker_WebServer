@@ -1,4 +1,4 @@
-FROM php:5.6-fpm
+FROM php:5.6-fpm-jessie
 # important !! this Dockerfile version is PHP5.2 ,Change URL and config with Other version
 
 # You may need proxy
@@ -28,7 +28,7 @@ RUN docker-php-ext-install bcmath
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
-&& composer config -g repo.packagist composer https://packagist.laravel-china.org
+&& composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 
 #  yaf redis
