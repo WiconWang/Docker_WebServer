@@ -1,0 +1,4 @@
+# */1 * * * * root echo "Hello world" >> /var/log/cron.log 2>&1
+# */1 * * * * root echo $(date) >> /var/log/cron.log 2>&1
+# */1 * * * * root echo "1111" >> /var/log/cron.log 2>&1
+# */1 * * * * root echo $(date +\%T) >> /var/log/cron.log 2>&1stretch
