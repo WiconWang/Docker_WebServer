@@ -194,7 +194,7 @@ services:
   #   ports:
   #     - "9060:9060"
   #   volumes:
-      - ~/Sites/:/Sites/:rw
+  #     - ~/Sites/:/Sites/:rw
   #     - ./wwwroot/python:/app
   #     - ./Logs/python:/var/log:rw
   #     - ./wwwroot/python/crontab:/var/spool/cron/crontabs:rw
