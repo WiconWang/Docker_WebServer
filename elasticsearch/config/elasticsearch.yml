@@ -1,0 +1,9 @@
+cluster.name: "docker-cluster"
+node.name: node-1 
+network.host: 0.0.0.0
+
+#开启跨域访问
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+
+cluster.initial_master_nodes: ["node-1"]
