@@ -44,23 +44,23 @@ services:
       prod-net:
         ipv4_address: 172.21.0.3
 
-  mongo:
-    image: mongo:4.1
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
-      - ./Databases/mongodb:/data/db:rw
-      - ./Logs/mongodb/:/var/log/mongodb/:rw
-    container_name: mongodb
-    environment:
-      - TZ=Asia/Shanghai
-    restart: always
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.5
-      prod-net:
-        ipv4_address: 172.21.0.5
+  # mongo:
+  #   image: mongo:4.1
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - ./Config/mongodb/mongod.conf:/etc/mongod.conf:ro
+  #     - ./Databases/mongodb:/data/db:rw
+  #     - ./Logs/mongodb/:/var/log/mongodb/:rw
+  #   container_name: mongodb
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.5
+  #     prod-net:
+  #       ipv4_address: 172.21.0.5
 
   php-fpm:
     build: ./Config/php/7.1
@@ -148,19 +148,19 @@ services:
       prod-net:
         ipv4_address: 172.21.0.10
 
-  memcached:
-    image: memcached:1.5
-    ports:
-      - "11211:11211"
-    container_name: memcached
-    environment:
-      - TZ=Asia/Shanghai
-    restart: always
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.11
-      prod-net:
-        ipv4_address: 172.21.0.11
+  # memcached:
+  #   image: memcached:1.5
+  #   ports:
+  #     - "11211:11211"
+  #   container_name: memcached
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.11
+  #     prod-net:
+  #       ipv4_address: 172.21.0.11
 
   # Vue框架 暂时有问题
   # 构建时支持Vue.但因为wwwroot下没有文件，会启动失败。Vue启动时会npm install。
@@ -185,29 +185,29 @@ services:
 
   # 注意此环境有env中配置了一个名为docker的库
   # 请先保证mysql正常编译
-  # python:
-  #   build: ./Config/python/3.7
-  #   env_file:
-  #     - ".env"
-  #   stdin_open: true
-  #   tty: true
-  #   ports:
-  #     - "9060:9060"
-  #   volumes:
-  #     - ~/Sites/:/Sites/:rw
-  #     - ./wwwroot/python:/app
-  #     - ./Logs/python:/var/log:rw
-  #     - ./wwwroot/python/crontab:/var/spool/cron/crontabs:rw
-  #   container_name: python3
-  #   command: sh start.sh
-  #   environment:
-  #     - TZ=Asia/Shanghai
-  #   restart: always
-  #   networks:
-  #     dev-net:
-  #       ipv4_address: 172.20.0.31
-  #     prod-net:
-  #       ipv4_address: 172.21.0.31
+  python:
+    build: ./Config/python/3.7
+    env_file:
+      - ".env"
+    stdin_open: true
+    tty: true
+    ports:
+      - "9060:9060"
+    volumes:
+      - ~/Sites/:/Sites/:rw
+      - ./wwwroot/python:/app
+      - ./Logs/python:/var/log:rw
+      - ./wwwroot/python/crontab:/var/spool/cron/crontabs:rw
+    container_name: python3
+    command: sh start.sh
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.31
+      prod-net:
+        ipv4_address: 172.21.0.31
 
 
   # Author: xmniko/Dockerfile-javaweb
@@ -250,6 +250,35 @@ services:
   #     # 挂载 JAVA 源代码目录
   #     - ./Java-maven-tomcat/wwwroot:/tmp/code
   #   restart: always
+  
+  nacos:
+    image: nacos/nacos-server:1.1.4
+    container_name: nacos
+    env_file:
+      - ".env"
+    environment:
+      - PREFER_HOST_MODE=${NACOS_PREFER_HOST_MODE}
+      - MODE=${NACOS_MODE}
+      - SPRING_DATASOURCE_PLATFORM=${NACOS_SPRING_DATASOURCE_PLATFORM}
+      - MYSQL_MASTER_SERVICE_HOST=${NACOS_MYSQL_SERVICE_HOST}
+      - MYSQL_MASTER_SERVICE_DB_NAME=${NACOS_MYSQL_SERVICE_DB_NAME}
+      - MYSQL_MASTER_SERVICE_PORT=${MYSQL_PORT}
+      - MYSQL_MASTER_SERVICE_USER=${MYSQL_ROOT_USER}
+      - MYSQL_MASTER_SERVICE_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_SLAVE_SERVICE_HOST=${NACOS_MYSQL_SERVICE_HOST}
+      - MYSQL_SLAVE_SERVICE_PORT=${MYSQL_PORT}
+    volumes:
+      - ./Logs/nacos/:/home/nacos/logs
+      - ./config/nacos/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - "8848:8848"
+      - "9555:9555"
+    restart: on-failure
+    networks:
+      dev-net:
+        ipv4_address: 172.20.0.41
+      prod-net:
+        ipv4_address: 172.21.0.41
 
 networks:
   dev-net:
