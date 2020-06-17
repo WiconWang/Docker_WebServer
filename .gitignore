@@ -11,3 +11,4 @@ Logs/php-fpm/*
 .DS_Store
 .vscode
 /.env
+*.bak
