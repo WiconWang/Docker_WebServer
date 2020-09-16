@@ -1,8 +1,6 @@
+# Open Your Need
 version: '3'
 services:
-  # Open Your Need
-  # ######## ######## ######## ######## #
-
   # # Common Service: 172.20.0.2~9
   # # Nginx
   # nginx:
