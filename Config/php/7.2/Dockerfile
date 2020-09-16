@@ -97,7 +97,7 @@ RUN yes | pecl install mongodb-1.5.3 \
     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
 
 # Swoole
-RUN yes | pecl install swoole-4.2.11 \
+RUN yes | pecl install swoole-4.5.2 \
     &&  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/swoole.so" > /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
 
 

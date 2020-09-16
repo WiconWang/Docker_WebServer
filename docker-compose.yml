@@ -1,49 +1,88 @@
 version: '3'
 services:
-  nginx:
-    image: nginx:1.15
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      # - ~/Sites/:/Sites/:rw
-      - ./wwwroot/:/var/www/html/:rw
-      - ./Config/nginx/conf.d:/etc/nginx/conf.d/:ro
-      - ./Config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./Logs/nginx/:/var/log/nginx/:rw
-    container_name: nginx
-    environment:
-      - TZ=Asia/Shanghai
-    restart: always
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.2
-      prod-net:
-        ipv4_address: 172.21.0.2
+  # Open Your Need
+  # ######## ######## ######## ######## #
 
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./Config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-      - ./Databases/mysql/:/var/lib/mysql/:rw
-      - ./Logs/mysql/:/var/log/mysql/:rw
-    env_file:
-      - ".env"
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    restart: always
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.3
-      prod-net:
-        ipv4_address: 172.21.0.3
+  # # Common Service: 172.20.0.2~9
+  # # Nginx
+  # nginx:
+  #   image: nginx:1.15
+  #   ports:
+  #     - "80-89:80-89"
+  #     - "443:443"
+  #   volumes:
+  #     - ~/Sites/:/Sites/:rw
+  #     - ./wwwroot/:/var/www/html/:rw
+  #     - ./Config/nginx/conf.d:/etc/nginx/conf.d/:ro
+  #     - ./Config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./Logs/nginx/:/var/log/nginx/:rw
+  #   container_name: nginx
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.2
+  #     prod-net:
+  #       ipv4_address: 172.21.0.2
 
+  # # Nacos
+  # nacos:
+  #   image: nacos/nacos-server:1.0.4
+  #   container_name: nacos
+  #   env_file:
+  #     - ".env"
+  #   environment:
+  #     - PREFER_HOST_MODE=${NACOS_PREFER_HOST_MODE}
+  #     - MODE=${NACOS_MODE}
+  #     - SPRING_DATASOURCE_PLATFORM=${NACOS_SPRING_DATASOURCE_PLATFORM}
+  #     - MYSQL_MASTER_SERVICE_HOST=${NACOS_MYSQL_SERVICE_HOST}
+  #     - MYSQL_MASTER_SERVICE_DB_NAME=${NACOS_MYSQL_SERVICE_DB_NAME}
+  #     - MYSQL_MASTER_SERVICE_PORT=${MYSQL_PORT}
+  #     - MYSQL_MASTER_SERVICE_USER=${MYSQL_ROOT_USER}
+  #     - MYSQL_MASTER_SERVICE_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_SLAVE_SERVICE_HOST=${NACOS_MYSQL_SERVICE_HOST}
+  #     - MYSQL_SLAVE_SERVICE_PORT=${MYSQL_PORT}
+  #   volumes:
+  #     - ./Logs/nacos/:/home/nacos/logs
+  #     - ./config/nacos/custom.properties:/home/nacos/init.d/custom.properties
+  #   ports:
+  #     - "8848:8848"
+  #     - "9555:9555"
+  #   restart: on-failure
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.3
+  #     prod-net:
+  #       ipv4_address: 172.21.0.3
+        
+
+  # # DataBases: 172.20.0.11~19
+  # # MySQL Service
+  # mysql:
+  #   image: mysql:5.7
+  #   container_name: mysql
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - ./Config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+  #     - ./Databases/mysql/:/var/lib/mysql/:rw
+  #     - ./Logs/mysql/:/var/log/mysql/:rw
+  #   env_file:
+  #     - ".env"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_DATABASE=${MYSQL_DATABASE}
+  #     - MYSQL_USER=${MYSQL_USER}
+  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.11
+  #     prod-net:
+  #       ipv4_address: 172.21.0.11
+
+  # # Mongo Service
   # mongo:
   #   image: mongo:4.1
   #   ports:
@@ -58,55 +97,122 @@ services:
   #   restart: always
   #   networks:
   #     dev-net:
-  #       ipv4_address: 172.20.0.5
+  #       ipv4_address: 172.20.0.12
   #     prod-net:
-  #       ipv4_address: 172.21.0.5
-
-  php-fpm:
-    build: ./Config/php/7.1
-    expose:
-      - "9000"
-    volumes:
-      # - ~/Sites/:/Sites/:rw
-      - ./wwwroot/:/var/www/html/:rw
-      - ./Config/php/7.1/php.ini:/usr/local/etc/php/php.ini:rw
-      - ./Config/php/7.1/conf.d:/usr/local/etc/php/conf.d:rw
-      - ./Config/php/7.1/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
-      - ./Logs/php-fpm/:/var/log/php-fpm/:rw
-    container_name: php-fpm
-    environment:
-      - TZ=Asia/Shanghai
-      - REDIS_PORT=6379
-    restart: always
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.6
-      prod-net:
-        ipv4_address: 172.21.0.6
-
-  php72-fpm:
-    build: ./Config/php/7.2
-    expose:
-      - "9000"
-    volumes:
-      # - ~/Sites/:/Sites/:rw
-      - ./wwwroot/:/var/www/html/:rw
-      - ./Config/php/7.2/php.ini:/usr/local/etc/php/php.ini:rw
-      - ./Config/php/7.2/conf.d:/usr/local/etc/php/conf.d:rw
-      - ./Config/php/7.2/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
-      - ./Logs/php-fpm/:/var/log/php-fpm/:rw
-    container_name: php72-fpm
-    environment:
-      - TZ=Asia/Shanghai
-      - REDIS_PORT=6379
-    restart: always
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.7
-      prod-net:
-        ipv4_address: 172.21.0.7
+  #       ipv4_address: 172.21.0.12
+   
+  # # Redis Service
+  # redis:
+  #   image: redis:5.0
+  #   command: redis-server /usr/local/etc/redis.conf
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - ./Databases/redis/:/usr/local/redis/:rw
+  #     - ./Config/redis/redis.conf:/usr/local/etc/redis.conf:ro
+  #   container_name: redis
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.13
+  #     prod-net:
+  #       ipv4_address: 172.21.0.13
 
 
+  # # Memcached Service
+  # memcached:
+  #   image: memcached:1.5
+  #   ports:
+  #     - "11211:11211"
+  #   container_name: memcached
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.14
+  #     prod-net:
+  #       ipv4_address: 172.21.0.14
+
+
+  # # HBase Zookeeper REST API Service
+  # # Author:Hari Sekhon
+  # # hbase web page is http://localhost:16010
+  # # REST server is http://localhost:16085/
+  # hbase: 
+  #   image: harisekhon/hbase:2.1
+  #   hostname: hbase.vnet
+  #   container_name: hbase
+  #   volumes:
+  #     - ./Logs/hbase:/hbase/logs:rw
+  #   ports:      
+  #     - "16081:2181"
+  #     - "16080:8080"
+  #     - "16085:8085"
+  #     - "16090:9090"
+  #     - "16095:9095"
+  #     - "16000:16000"
+  #     - "16010:16010"
+  #     - "16201:16201"
+  #     - "16301:16301"
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.13
+  #     prod-net:
+  #       ipv4_address: 172.21.0.13
+
+  # # PHP Service: 172.20.0.20~29
+  # # PHP 7.1 
+  # php-fpm:
+  #   build: ./Config/php/7.1
+  #   expose:
+  #     - "9000"
+  #   volumes:
+  #     - ~/Sites/:/Sites/:rw
+  #     - ./wwwroot/:/var/www/html/:rw
+  #     - ./Config/php/7.1/php.ini:/usr/local/etc/php/php.ini:rw
+  #     - ./Config/php/7.1/conf.d:/usr/local/etc/php/conf.d:rw
+  #     - ./Config/php/7.1/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+  #     - ./Logs/php-fpm/:/var/log/php-fpm/:rw
+  #   container_name: php-fpm
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #     - REDIS_PORT=6379
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.21
+  #     prod-net:
+  #       ipv4_address: 172.21.0.21
+
+  # # PHP 7.2 
+  # php72-fpm:
+  #   build: ./Config/php/7.2
+  #   expose:
+  #     - "9000"
+  #   volumes:
+  #     - ~/Sites/:/Sites/:rw
+  #     - ./wwwroot/:/var/www/html/:rw
+  #     - ./Config/php/7.2/php.ini:/usr/local/etc/php/php.ini:rw
+  #     - ./Config/php/7.2/conf.d:/usr/local/etc/php/conf.d:rw
+  #     - ./Config/php/7.2/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+  #     - ./Logs/php-fpm/:/var/log/php-fpm/:rw
+  #   container_name: php72-fpm
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #     - REDIS_PORT=6379
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.22
+  #     prod-net:
+  #       ipv4_address: 172.21.0.22
+
+
+  # # PHP 5.6 
   # php56-fpm:
   #   build: ./Config/php/5.6
   #   expose:
@@ -125,45 +231,15 @@ services:
   #   restart: always
   #   networks:
   #     dev-net:
-  #       ipv4_address: 172.20.0.8
+  #       ipv4_address: 172.20.0.23
   #     prod-net:
-  #       ipv4_address: 172.21.0.8
+  #       ipv4_address: 172.21.0.23
 
 
-  redis:
-    image: redis:5.0
-    command: redis-server /usr/local/etc/redis.conf
-    ports:
-      - "6379:6379"
-    volumes:
-      - ./Databases/redis/:/usr/local/redis/:rw
-      - ./Config/redis/redis.conf:/usr/local/etc/redis.conf:ro
-    container_name: redis
-    environment:
-      - TZ=Asia/Shanghai
-    restart: always
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.10
-      prod-net:
-        ipv4_address: 172.21.0.10
 
-  # memcached:
-  #   image: memcached:1.5
-  #   ports:
-  #     - "11211:11211"
-  #   container_name: memcached
-  #   environment:
-  #     - TZ=Asia/Shanghai
-  #   restart: always
-  #   networks:
-  #     dev-net:
-  #       ipv4_address: 172.20.0.11
-  #     prod-net:
-  #       ipv4_address: 172.21.0.11
-
-  # Vue框架 暂时有问题
-  # 构建时支持Vue.但因为wwwroot下没有文件，会启动失败。Vue启动时会npm install。
+  # # Web Service: 172.20.0.30~49
+  # # Vue Web Service
+  # # 构建时支持Vue.但因为wwwroot下没有文件，会启动失败。Vue启动时会npm install。
   # vue:
   #   # image: node:9.11
   #   build: ./Config/vue
@@ -178,41 +254,43 @@ services:
   #   command: /bin/bash -c "npm install && npm run dev"
   #   networks:
   #     dev-net:
-  #       ipv4_address: 172.20.0.21
+  #       ipv4_address: 172.20.0.31
   #     prod-net:
-  #       ipv4_address: 172.21.0.21
+  #       ipv4_address: 172.21.0.31
 
 
-  # 注意此环境有env中配置了一个名为docker的库
-  # 请先保证mysql正常编译
-  python:
-    build: ./Config/python/3.7
-    env_file:
-      - ".env"
-    stdin_open: true
-    tty: true
-    ports:
-      - "9060:9060"
-    volumes:
-      - ~/Sites/:/Sites/:rw
-      - ./wwwroot/python:/app
-      - ./Logs/python:/var/log:rw
-      - ./wwwroot/python/crontab:/var/spool/cron/crontabs:rw
-    container_name: python3
-    command: sh start.sh
-    environment:
-      - TZ=Asia/Shanghai
-    restart: always
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.31
-      prod-net:
-        ipv4_address: 172.21.0.31
+  # # Python Django Web Service
+  # # 注意此环境有env中配置了一个名为docker的库
+  # # 请先保证mysql正常编译
+  # python:
+  #   build: ./Config/python/3.7
+  #   env_file:
+  #     - ".env"
+  #   stdin_open: true
+  #   tty: true
+  #   ports:
+  #     - "9060:9060"
+  #   volumes:
+  #     - ~/Sites/:/Sites/:rw
+  #     - ./wwwroot/python:/app
+  #     - ./Logs/python:/var/log:rw
+  #     - ./wwwroot/python/crontab:/var/spool/cron/crontabs:rw
+  #   container_name: python3
+  #   command: sh start.sh
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.32
+  #     prod-net:
+  #       ipv4_address: 172.21.0.32
 
 
-  # Author: xmniko/Dockerfile-javaweb
-  # 本镜像为 Jdk8 Tomcat8.5.23 supervisor
-  # 注意此环境不可与上一个java环境同时开启
+  # # Web: Java Tomcat Service
+  # # Author: xmniko/Dockerfile-javaweb
+  # # 本镜像为 Jdk8 Tomcat8.5.23 supervisor
+  # # 注意此环境不可与上一个java环境同时开启
   # java-tomcat-supervisor:
   #   container_name: tomcat_jdk8
   #   build: ./Java-tomcat-supervisor
@@ -227,11 +305,17 @@ services:
   #     - ./Java-tomcat-supervisor/conf/tomcat/web.xml:/data/tomcat/conf/web.xml:ro
   #     - ./Java-tomcat-supervisor/conf/httpd/httpd.conf:/etc/httpd/conf/httpd.conf:ro
   #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.33
+  #     prod-net:
+  #       ipv4_address: 172.21.0.33
 
 
 
-  # Author:/springjk/Java-in-docker
-  # 本镜像为 Jdk8 Tomcat8.5.23 自动使用 Maven3.3.9布署
+  # # Web: Java Tomcat and Maven Service
+  # # Author:/springjk/Java-in-docker
+  # # 本镜像为 Jdk8 Tomcat8.5.23 自动使用 Maven3.3.9布署
   # java-maven-tomcat:
   #   # 免构建镜像，未修改构建文件下等同于构建本地镜像，如使用本地 build 需注释此行并关闭 build 注释。
   #   # image: registry.cn-hangzhou.aliyuncs.com/springjk/Java-maven-tomcat
@@ -250,35 +334,71 @@ services:
   #     # 挂载 JAVA 源代码目录
   #     - ./Java-maven-tomcat/wwwroot:/tmp/code
   #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.34
+  #     prod-net:
+  #       ipv4_address: 172.21.0.34
   
-  nacos:
-    image: nacos/nacos-server:1.1.4
-    container_name: nacos
-    env_file:
-      - ".env"
-    environment:
-      - PREFER_HOST_MODE=${NACOS_PREFER_HOST_MODE}
-      - MODE=${NACOS_MODE}
-      - SPRING_DATASOURCE_PLATFORM=${NACOS_SPRING_DATASOURCE_PLATFORM}
-      - MYSQL_MASTER_SERVICE_HOST=${NACOS_MYSQL_SERVICE_HOST}
-      - MYSQL_MASTER_SERVICE_DB_NAME=${NACOS_MYSQL_SERVICE_DB_NAME}
-      - MYSQL_MASTER_SERVICE_PORT=${MYSQL_PORT}
-      - MYSQL_MASTER_SERVICE_USER=${MYSQL_ROOT_USER}
-      - MYSQL_MASTER_SERVICE_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_SLAVE_SERVICE_HOST=${NACOS_MYSQL_SERVICE_HOST}
-      - MYSQL_SLAVE_SERVICE_PORT=${MYSQL_PORT}
-    volumes:
-      - ./Logs/nacos/:/home/nacos/logs
-      - ./config/nacos/custom.properties:/home/nacos/init.d/custom.properties
-    ports:
-      - "8848:8848"
-      - "9555:9555"
-    restart: on-failure
-    networks:
-      dev-net:
-        ipv4_address: 172.20.0.41
-      prod-net:
-        ipv4_address: 172.21.0.41
+
+  # # Big Data: 172.20.0.51~69
+  # # ElasticSearch 
+  # elasticsearch:
+  #   image: elasticsearch:7.7.0
+  #   container_name: elasticsearch
+  #   hostname: elasticsearch.vnet
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   environment:
+  #     - cluster.name=docker-cluster
+  #     - bootstrap.memory_lock=true
+  #     - xpack.security.enabled=false
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9200"]
+  #     interval: 30s
+  #     timeout: 30s
+  #     retries: 10
+  #   volumes:
+  #     -  ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:rw
+  #     -  ./elasticsearch/data:/usr/share/elasticsearch/data"
+  #     -  ./elasticsearch/plugins/elasticsearch-analysis-ik-7.7.0:/usr/share/elasticsearch/plugins/ik683:rw
+  #   restart: always
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.51
+  #     prod-net:
+  #       ipv4_address: 172.21.0.51
+
+  # # ElasticSearch kibana
+  # kibana:
+  #   image: kibana:7.7.0
+  #   container_name: kibana
+  #   hostname: kibana.vnet
+  #   volumes:
+  #     - ./elasticsearch/config/kibana.yml:/usr/share/kibana/config/kibana.yml:rw
+  #   restart: always
+  #   ports:
+  #     - "5601:5601"
+  #   links:
+  #     - elasticsearch
+  #   depends_on:
+  #     - elasticsearch
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:5601"]
+  #     interval: 30s
+  #     timeout: 30s
+  #     retries: 10
+  #   networks:
+  #     dev-net:
+  #       ipv4_address: 172.20.0.52
+  #     prod-net:
+  #       ipv4_address: 172.21.0.52
 
 networks:
   dev-net:

@@ -1,5 +1,6 @@
 *.conf
-!php7.conf
-!php56.conf
-!php7https.conf
+!wwwroot.conf
+!php7.conf.demo
+!php56.conf.demo
+!php7https.conf.demo
 !.gitignore

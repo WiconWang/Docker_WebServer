@@ -1,6 +1,7 @@
 # Docker_WebServer
 
 ## Install
+1. 请安装好Docker，以及Docker-compose。（desktop版已自带）
 1. 请先检查`docker-compose.yml`中的组件，关闭或者开启所需要的功能模块。   
 1. 将根目录下的 `.env.example` 复制 为 `.env` 并修改内部的值，设定Mysql模块初始的Root密码。   
 
@@ -8,15 +9,18 @@
 docker-compose.yml 文件中包含以下程序配置，  
 
 1.  Nginx 1.15   
-1.  PHP 7.1 （ Config/php/7.1/Dockerfile）
-1.  PHP 5.6 （ Config/php/5.6/Dockerfile）
-1.  Mysql 5.7    
-1.  Redis 5.0   
-1.  Memcached 1.5   
-1.  MongoDB  4.1 
-1.  Python 3.7
-1.  Java-maven-tomcat   （ Java-maven-tomcat/Dockerfile）
-1.  Java-tomcat-supervisor   （ Java-tomcat-supervisor/Dockerfile） 
+2.  Nacos 1.0.4
+4.  Mysql 5.7   
+7.  MongoDB  4.1  
+5.  Redis 5.0   
+6.  Memcached 1.5   
+7.  HBase 2.1 with Zookeeper and REST API
+8.  PHP 5.6|7.X （ Config/php/XX/Dockerfile）
+9.  Vue with node 9.11
+10. Django 1.9 with python 3.7
+11. Java-maven-tomcat   （ Java-maven-tomcat/Dockerfile）
+12. Java-tomcat-supervisor   （ Java-tomcat-supervisor/Dockerfile）
+13. ElasticSearch and Kibana 
 
 ---  
 git clone 后。请按需求组合，并启用您需要的环境：    
@@ -48,6 +52,10 @@ git clone 后。请按需求组合，并启用您需要的环境：
 > **Java-maven-tomcat** ： 生成容器时自启动maven，并编译wwwroot下的代码    
 
 > 建议同时请启用Mysql  
+
+### 大数据环境
+
+> 选择启用  ElasticSearch 、 Kibana 、  HBase等
 
 ---  
 
