@@ -1,15 +1,15 @@
 # Open Your Need
 version: '3'
 services:
-  # # Common Service: 172.20.0.2~9
-  # # Nginx
+  # Common Service: 172.20.0.2~9
+  # Nginx
   # nginx:
   #   image: nginx:1.15
   #   ports:
   #     - "80-89:80-89"
   #     - "443:443"
   #   volumes:
-  #     - ~/Sites/:/Sites/:rw
+  #     - ${SITE_ROOT}:/Sites/:rw
   #     - ./wwwroot/:/var/www/html/:rw
   #     - ./Config/nginx/conf.d:/etc/nginx/conf.d/:ro
   #     - ./Config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -158,9 +158,9 @@ services:
   #   restart: always
   #   networks:
   #     dev-net:
-  #       ipv4_address: 172.20.0.13
+  #       ipv4_address: 172.20.0.15
   #     prod-net:
-  #       ipv4_address: 172.21.0.13
+  #       ipv4_address: 172.21.0.15
 
   # # PHP Service: 172.20.0.20~29
   # # PHP 7.1 
@@ -169,7 +169,7 @@ services:
   #   expose:
   #     - "9000"
   #   volumes:
-  #     - ~/Sites/:/Sites/:rw
+  #     - ${SITE_ROOT}:/Sites/:rw
   #     - ./wwwroot/:/var/www/html/:rw
   #     - ./Config/php/7.1/php.ini:/usr/local/etc/php/php.ini:rw
   #     - ./Config/php/7.1/conf.d:/usr/local/etc/php/conf.d:rw
@@ -192,7 +192,7 @@ services:
   #   expose:
   #     - "9000"
   #   volumes:
-  #     - ~/Sites/:/Sites/:rw
+  #     - ${SITE_ROOT}:/Sites/:rw
   #     - ./wwwroot/:/var/www/html/:rw
   #     - ./Config/php/7.2/php.ini:/usr/local/etc/php/php.ini:rw
   #     - ./Config/php/7.2/conf.d:/usr/local/etc/php/conf.d:rw
@@ -216,7 +216,7 @@ services:
   #   expose:
   #     - "9000"
   #   volumes:
-  #     - ~/Sites/:/Sites/:rw
+  #     - ${SITE_ROOT}:/Sites/:rw
   #     - ./wwwroot/:/var/www/html/:rw
   #     - ./Config/php/5.6/php.ini:/usr/local/etc/php/php.ini:rw
   #     - ./Config/php/5.6/conf.d:/usr/local/etc/php/conf.d:rw
@@ -269,7 +269,7 @@ services:
   #   ports:
   #     - "9060:9060"
   #   volumes:
-  #     - ~/Sites/:/Sites/:rw
+  #     - ${SITE_ROOT}:/Sites/:rw
   #     - ./wwwroot/python:/app
   #     - ./Logs/python:/var/log:rw
   #     - ./wwwroot/python/crontab:/var/spool/cron/crontabs:rw
