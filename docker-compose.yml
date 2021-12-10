@@ -2,7 +2,7 @@
 version: '3'
 services:
   # Common Service: 172.20.0.2~9
-  # Nginx
+  # # Nginx
   # nginx:
   #   image: nginx:1.15
   #   ports:
@@ -23,10 +23,9 @@ services:
   #       ipv4_address: 172.20.0.2
   #     prod-net:
   #       ipv4_address: 172.21.0.2
-
   # # Nacos
   # nacos:
-  #   image: nacos/nacos-server:1.0.4
+  #   image: nacos/nacos-server:2.0.3
   #   container_name: nacos
   #   env_file:
   #     - ".env"
@@ -41,9 +40,15 @@ services:
   #     - MYSQL_MASTER_SERVICE_PASSWORD=${MYSQL_ROOT_PASSWORD}
   #     - MYSQL_SLAVE_SERVICE_HOST=${NACOS_MYSQL_SERVICE_HOST}
   #     - MYSQL_SLAVE_SERVICE_PORT=${MYSQL_PORT}
+  #     - MYSQL_SERVICE_HOST=${NACOS_MYSQL_SERVICE_HOST}
+  #     - MYSQL_SERVICE_DB_NAME=${NACOS_MYSQL_SERVICE_DB_NAME}
+  #     - MYSQL_SERVICE_PORT=${MYSQL_PORT}
+  #     - MYSQL_SERVICE_USER=${MYSQL_ROOT_USER}
+  #     - MYSQL_SERVICE_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&serverTimezone=UTC
   #   volumes:
   #     - ./Logs/nacos/:/home/nacos/logs
-  #     - ./config/nacos/custom.properties:/home/nacos/init.d/custom.properties
+  #     # - ./config/nacos/custom.properties:/home/nacos/init.d/custom.properties
   #   ports:
   #     - "8848:8848"
   #     - "9555:9555"
@@ -58,7 +63,7 @@ services:
   # # DataBases: 172.20.0.11~19
   # # MySQL Service
   # mysql:
-  #   image: mysql:5.7
+  #   image: mysql:8
   #   container_name: mysql
   #   ports:
   #     - "3306:3306"
@@ -68,6 +73,8 @@ services:
   #     - ./Logs/mysql/:/var/log/mysql/:rw
   #   env_file:
   #     - ".env"
+  #   security_opt:
+  #     - seccomp:unconfined
   #   environment:
   #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
   #     - MYSQL_DATABASE=${MYSQL_DATABASE}

@@ -3,14 +3,15 @@
 ## Install
 1. 请安装好Docker，以及Docker-compose。（desktop版已自带）
 1. 请先检查`docker-compose.yml`中的组件，关闭或者开启所需要的功能模块。   
-1. 将根目录下的 `.env.example` 复制 为 `.env` 并修改内部的值，设定Mysql模块初始的Root密码。   
+1. 将根目录下的 `.env.example` 复制 为 `.env` 并修改内部的值，比如设置默认项目目录 、设定Mysql模块初始的Root密码。   
+1. Nacos组件需要在Mysql启动后。连接进入，新建名为`nacos`git的数据库，并将本目录下的`nacos.sql`导入其中，才可以正常使用。默认帐号密码均为`nacos`
 
 ## Introduction  
 docker-compose.yml 文件中包含以下程序配置，  
 
 1.  Nginx 1.15   
-2.  Nacos 1.0.4
-4.  Mysql 5.7   
+2.  Nacos 2.0.3
+4.  Mysql 8  
 7.  MongoDB  4.1  
 5.  Redis 5.0   
 6.  Memcached 1.5   
